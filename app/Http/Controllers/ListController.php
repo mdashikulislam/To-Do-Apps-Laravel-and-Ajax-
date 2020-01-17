@@ -28,4 +28,16 @@ class ListController extends Controller
         $item->save();
         return "Update";
     }
+    public function search(Request $request){
+        $term = $request->term;
+        $items = Item::where('item','LIKE','%'.$term.'%')->get();
+        if (count($items) == 0){
+            return $searchItem[] = "No Item Found";
+        }else{
+           foreach ($items as $item){
+               $searchItem[] = $item->item;
+           }
+        }
+        return $searchItem;
+    }
 }

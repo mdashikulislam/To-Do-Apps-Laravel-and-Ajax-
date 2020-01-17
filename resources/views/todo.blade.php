@@ -8,6 +8,7 @@
     <title>To Do - Laravel Ajax</title>
     <link rel="stylesheet" href="{{asset('inc/css/bootstrap.css')}}">
     <link rel="stylesheet" href="{{asset('inc/css/bootstrap-theme.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" integrity="sha256-p6xU9YulB7E2Ic62/PX+h59ayb3PBJ0WFTEQxq0EjHw=" crossorigin="anonymous" />
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
 <body>
@@ -30,6 +31,9 @@
                     </ul>
                 </div>
             </div>
+        </div>
+        <div class="col-lg-2">
+            <input type="text" name="searchItem" id="searchItem" class="form-control">
         </div>
         <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
             <div class="modal-dialog" role="document">
@@ -60,7 +64,8 @@
 
     <script src="{{asset('inc/js/jquery-3.2.1.js')}}"></script>
     <script src="{{asset('inc/js/bootstrap.js')}}"></script>
-    <script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+<script>
         $(document).ready(function () {
             $(document).on('click','.ourItem',function (event) {
                 var id = $(this).find('#itemId').val();
@@ -117,6 +122,36 @@
 
 
             });
+            $( function() {
+                var availableTags = [
+                    "ActionScript",
+                    "AppleScript",
+                    "Asp",
+                    "BASIC",
+                    "C",
+                    "C++",
+                    "Clojure",
+                    "COBOL",
+                    "ColdFusion",
+                    "Erlang",
+                    "Fortran",
+                    "Groovy",
+                    "Haskell",
+                    "Java",
+                    "JavaScript",
+                    "Lisp",
+                    "Perl",
+                    "PHP",
+                    "Python",
+                    "Ruby",
+                    "Scala",
+                    "Scheme"
+                ];
+                $( "#searchItem").autocomplete({
+                    source: '{{route('search')}}'
+                });
+
+            } );
 
         });
     </script>
