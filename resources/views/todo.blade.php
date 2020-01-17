@@ -17,15 +17,13 @@
         <div class="col-lg-offset-2 col-lg-8 col-of">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Ajax Todo List <a href="" data-toggle="modal" data-target="#myModal" class="pull-right"><p><i class="fa fa-plus"></i></p></a> </h3>
+                    <h3 class="panel-title">Ajax Todo List <a href="" data-toggle="modal" id="addNew" data-target="#myModal" class="pull-right"><p><i class="fa fa-plus"></i></p></a> </h3>
                 </div>
                 <div class="panel-body">
                     <ul class="list-group">
-                        <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal" >Cras justo odio</li>
-                        <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal" >Dapibus ac facilisis in</li>
-                        <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal" >Morbi leo risus</li>
-                        <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal" >Porta ac consectetur ac</li>
-                        <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal" >Vestibulum at eros</li>
+                        @foreach($items as $item)
+                            <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal" >{{$item->item}}</li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
@@ -34,24 +32,25 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="title">Add Item</h4>
+                        <button type="button" class="close"  data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="title"></h4>
                     </div>
                     <div class="modal-body">
                         <p>
-                            <input type="text" class="form-control" placeholder="Enter To Do Here" id="addItem">
+                            <input type="text" class="form-control" placeholder="Enter To Do Here" id="addItem" name="text">
                         </p>
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" id="delete" data-dismiss="modal" style="display: none;">Delete</button>
-                        <button type="button" class="btn btn-info" id="saveChanges" style="display: none">Save changes</button>
+                        <button type="button" class="btn btn-warning" id="delete" data-dismiss="modal" >Delete</button>
+                        <button type="button" class="btn btn-info" id="saveChanges" >Save changes</button>
                         <button type="button" class="btn btn-primary" id="addButton">Add Item</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div>
     </div>
+    {{csrf_field()}}
 </div>
 
 
@@ -59,16 +58,32 @@
     <script src="{{asset('inc/js/bootstrap.js')}}"></script>
     <script>
         $(document).ready(function () {
+            $('#addNew').click(function (event) {
+                $('#title').text('Add New Item');
+                $('#delete').hide();
+                $('#saveChanges').hide();
+                $('#addButton').show();
+                $('#addItem').val("");
+            });
             $('.ourItem').each(function () {
                 $(this).click(function (event) {
-                    var text = $(this).text();
+                    $('#title').text("Edit Item");
+                    var text  = $(this).text();
                     $('#addItem').val(text);
-                    $('#title').text('Edit Item');
-                    $('#delete').show('100');
-                    $('#saveChanges').show('100');
                     $('#addButton').hide();
+                    $('#delete').show();
+                    $('#saveChanges').show();
                 });
             });
+           $('#addButton').click(function (event) {
+                var text = $('#addItem').val();
+                $.post('list',{"text": text,'_token': $('input[name=_token]').val()},function (data) {
+                    $('#myModal').modal('hide');
+                });
+
+
+           });
+
         });
     </script>
 </body>
