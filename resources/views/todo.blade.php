@@ -66,6 +66,7 @@
                 var id = $(this).find('#itemId').val();
                 $('#title').text("Edit Item");
                 var text  = $(this).text();
+                text = $.trim(text);
                 $('#addItem').val(text);
                 $('#addButton').hide();
                 $('#delete').show();
@@ -83,11 +84,16 @@
 
            $('#addButton').click(function (event) {
                 var text = $('#addItem').val();
-                $.post('list',{"text": text,'_token': $('input[name=_token]').val()},function (data) {
-                    $('#myModal').modal('hide');
-                    $('#items').load(location.href + ' #items');
+                if(text == ""){
+                    alert('Feild Must not be empty...!!!');
+                }else{
+                    $.post('list',{"text": text,'_token': $('input[name=_token]').val()},function (data) {
+                        $('#myModal').modal('hide');
+                        $('#items').load(location.href + ' #items');
 
-                });
+                    });
+                }
+
            });
             $('#delete').click(function (event) {
                 var id = $('#id').val();
@@ -96,6 +102,22 @@
                     $('#myModal').modal('hide');
                 });
             });
+            $('#saveChanges').click(function (event) {
+                var id = $('#id').val();
+                var itemValue = $('#addItem').val();
+                if(itemValue == ""){
+                    alert('Feild Must not be empty...!!');
+                }else{
+                    $.post('update',{'id':id,'item': itemValue,'_token': $('input[name=_token]').val()},function (data) {
+                        $('#items').load(location.href + ' #items');
+                        $('#myModal').modal('hide');
+                        console.log(data);
+                    });
+                }
+
+
+            });
+
         });
     </script>
 </body>
