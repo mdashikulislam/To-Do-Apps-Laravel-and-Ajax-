@@ -18,4 +18,8 @@ class ListController extends Controller
         $item->save();
         return "Done";
     }
+    public function delete(Request $request){
+        $item = Item::where('id',$request->id)->delete();
+        return "Delete";
+    }
 }

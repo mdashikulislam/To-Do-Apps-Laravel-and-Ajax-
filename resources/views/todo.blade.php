@@ -19,10 +19,13 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">Ajax Todo List <a href="" data-toggle="modal" id="addNew" data-target="#myModal" class="pull-right"><p><i class="fa fa-plus"></i></p></a> </h3>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" id="items">
                     <ul class="list-group">
                         @foreach($items as $item)
-                            <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal" >{{$item->item}}</li>
+                            <li class="list-group-item ourItem" data-toggle="modal" data-target="#myModal" >{{$item->item}}
+                                <input type="hidden" id="itemId" value="{{$item->id}}">
+                            </li>
+
                         @endforeach
                     </ul>
                 </div>
@@ -38,6 +41,7 @@
                     <div class="modal-body">
                         <p>
                             <input type="text" class="form-control" placeholder="Enter To Do Here" id="addItem" name="text">
+                            <input type="hidden" id="id">
                         </p>
 
                     </div>
@@ -58,32 +62,40 @@
     <script src="{{asset('inc/js/bootstrap.js')}}"></script>
     <script>
         $(document).ready(function () {
-            $('#addNew').click(function (event) {
+            $(document).on('click','.ourItem',function (event) {
+                var id = $(this).find('#itemId').val();
+                $('#title').text("Edit Item");
+                var text  = $(this).text();
+                $('#addItem').val(text);
+                $('#addButton').hide();
+                $('#delete').show();
+                $('#saveChanges').show();
+                $('#id').val(id);
+            });
+            $(document).on('click','#addNew',function (event) {
                 $('#title').text('Add New Item');
                 $('#delete').hide();
                 $('#saveChanges').hide();
                 $('#addButton').show();
                 $('#addItem').val("");
             });
-            $('.ourItem').each(function () {
-                $(this).click(function (event) {
-                    $('#title').text("Edit Item");
-                    var text  = $(this).text();
-                    $('#addItem').val(text);
-                    $('#addButton').hide();
-                    $('#delete').show();
-                    $('#saveChanges').show();
-                });
-            });
+
+
            $('#addButton').click(function (event) {
                 var text = $('#addItem').val();
                 $.post('list',{"text": text,'_token': $('input[name=_token]').val()},function (data) {
                     $('#myModal').modal('hide');
+                    $('#items').load(location.href + ' #items');
+
                 });
-
-
            });
-
+            $('#delete').click(function (event) {
+                var id = $('#id').val();
+                $.post('delete',{'id':id,'_token': $('input[name=_token]').val()},function (data) {
+                    $('#items').load(location.href + ' #items');
+                    $('#myModal').modal('hide');
+                });
+            });
         });
     </script>
 </body>
